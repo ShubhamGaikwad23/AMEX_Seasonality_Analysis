@@ -98,3 +98,13 @@ SELECT area_name,customer_density
 FROM y 
 WHERE rnk<=3;
 -----------------------------------------------------------------------------------
+# Here is the solution using Pandas
+# Import your libraries
+import pandas as pd
+
+# Start writing code
+df1=pd.merge(transaction_records,stores,on='store_id')
+df2=df1.groupby(['area_name','area_size']).agg({'customer_id':'nunique'}).reset_index().rename(columns={'customer_id':'customer_count'})
+df2['customer_density']=df2['customer_count']/df2['area_size']
+df2['rank']=df2['customer_density'].rank(method='dense',ascending=False)
+df2[df2['rank']<=3][['area_name','customer_density']].sort_values(by='customer_density',ascending=False)
